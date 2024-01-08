@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="description" content="A page for exploring basic HTML documents">
+  <link rel="stylesheet" type="text/css" href='{% static "pomodoro/css/navigation.css" %}'>
+  </head>
+  <body>
+    <h1>Мои задачи</h1>
+    <h2>Сегодня</h2>
+    {% for pomodor in pomodor_today %}
+      <p>{{ pomodor }}</p>
+    {% endfor %}
+
+    <h2>Темы</h2> 
+    {% for theme in themes %}
+    <p class="stats-theme-name">{{theme.name}}  <a href="{% url 'delete_theme' theme.id %}"><img src="{% static 'pomodoro/img/trash.png' %}" alt="" height="20"></a> </p>
+    {% endfor %}
+  </body>
+</html>
