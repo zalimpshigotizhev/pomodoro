@@ -1,0 +1,147 @@
+  {% load static %}
+  <!DOCTYPE HTML>
+  <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="description" content="A page for exploring basic HTML documents">
+    <link rel="stylesheet" type="text/css" href='{% static "pomodoro/css/navigation.css" %}'>
+    <script src='{% static "pomodoro/js/timer.js" %}'></script>
+    <script src='{% static "pomodoro/js/func.js" %}'></script>
+    </head>
+    <body>
+      <div class="stats">
+        <button onclick="showContent2('content3', this)" class="stats-nav active-but active-butt">Новая тема</button>
+        <button onclick="showContent2('content4', this)" class="stats-nav active-but">Настройки</button>
+        <button onclick="showContent2('content5', this)" class="stats-nav active-but">Интерфейс</button>
+        <button onclick="showContent2('content6', this)" class="stats-nav active-but">Звук</button>
+        <div class="body-navigation">
+            <div class="f-content f-active" id="content3">
+              <h1 class="create-tasks">Создать задачу:</h1>
+              <form method="post" action="{% url 'create_tasks' %}" id="myForm">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <!-- <button type="submit">Создать</button> -->
+                <button class="btn-save pos-btn-save-create" type="submit">Создать</button>
+            </div>
+            <div class="f-content" id="content4">
+              <form action="{% url 'config' %}" method="post">
+              <h1>Настройки помидора</h1>
+
+                {% csrf_token %}
+                <div class="time-config">
+                  <label for="minute" class="input-min">Время помидора:</label><br>
+                  <input class="input-minutes focus2" type="number" name="minutes" id="minute" value="{{conf_min}}"/>
+                  <label for="minute-relax" class="input-min">Время отдыха:</label><br>
+                  <input class="input-minutes focus2" type="number" name="minutes_relax" id="minute-relax" value="{{conf_min}}"/>
+                </div>
+                <div class="time-config-2">
+                    <label for="minute-relax-long" class="input-min">Время long отдыха:</label><br>
+                    <input class="input-minutes focus2" type="number" name="minutes_relax_long" id="minute-relax-long" value=""/>
+                </div>
+                
+                <br>
+                <select class="form-control " name="themes" id="theme">
+                  <option value="">Здесь можно выбрать тему</option>
+                  {% for theme in themes %}
+                    <option value='{{ theme.id }}'>{{ theme.name }}</option>
+                  {% endfor %}
+                </select>
+                <button class="btn-save pos-btn-save-settings" type="submit">Сохранить</button>
+              </form>
+            </div>
+            <div class="f-content" id="content5">
+              <form action="{% url 'appearance' %}" method="POST">
+                <h1 class="h1-condition">Внешний вид</h1>
+
+                {% csrf_token %}
+                <div class="color-select">
+                    <input type="color" id="head" name="color" value="{{ color }}" />
+                    <label for="color">Цвет фона</label>
+                    <input type="color" id="head" name="color_navigation" value="{{ color_navigation }}" />
+                    <label for="color_navigation">Цвет навигации</label>
+                </div>  
+                <div class="image-container">
+                    <input type="hidden" id="selectedImage" name="vector" value="">
+
+                    <div>
+                        <img src="{% static "pomodoro/img/none.png" %}" alt="Картинка 1" onclick="selectImage(this, 'pomodoro/img/none.png')">
+                        <p class="image-description">Нет</p>
+                    </div>
+                    <div>
+                        <img src="{% static "pomodoro/img/shakh.png" %}" alt="Картинка 1" onclick="selectImage(this, 'pomodoro/img/shakh.png')">
+                        <p class="image-description">Шахматы</p>
+                    </div>
+                    <div>
+                        <img src="{% static "pomodoro/img/dzen.png" %}" alt="Картинка 1" onclick="selectImage(this, 'pomodoro/img/dzen.png')">
+                        <p class="image-description">Дзен</p>
+                    </div>
+                    <div>
+                        <img src="{% static "pomodoro/img/elka.png" %}" alt="Картинка 1" onclick="selectImage(this, 'pomodoro/img/elka.png')">
+                        <p class="image-description">Ёлка</p>
+                    </div>
+                </div>
+                <div>
+                  <button class="btn-save pos-btn-save-appearance" type="submit">Сохранить</button>
+                </div>
+            </form>
+            </div>
+            <div class="f-content" id="content6">
+              <form action="{% url 'appearance' %}" method="POST">
+                {% csrf_token %}
+                <div class="group-select-relax-melody">
+                  <h1 class="h1-condition">Звук уведомления</h1>
+
+                  <h2 class="h2-condition">Работа</h2>
+                  <div class="form_radio_group">
+                      <div class="form_radio_group-item">
+                          <input id="radio-6" type="radio" name="work" value='{% static "pomodoro/melody/matrix.mp3" %}' onchange="updateSelectionWork(this)">
+                          <label for="radio-6">Матрица</label>
+                      </div>
+          
+                      <div class="form_radio_group-item">
+                          <input id="radio-7" type="radio" name="work" value='{% static "pomodoro/melody/korol.mp3" %}' onchange="updateSelectionWork(this)">
+                          <label for="radio-7">Король</label>
+                      </div>
+                      <div class="form_radio_group-item">
+                          <input id="radio-8" type="radio" name="work" value='{% static "pomodoro/melody/vremya.mp3" %}' onchange="updateSelectionWork(this)">
+                          <label for="radio-8">Время</label>
+                      </div>
+                      <div class="form_radio_group-item">
+                          <input id="radio-9" type="radio" name="work" value='{% static "pomodoro/melody/steklo.mp3" %}' onchange="updateSelectionWork(this)">
+                          <label for="radio-9">Стекло</label>
+                      </div>
+                  </div>
+                  <a class="btn-radio-relax" onclick="playSelectSoundRelax('work')"><img src="{% static 'pomodoro/img/zvuk.png' %}" alt=""></a>
+              </div>
+              <div class="group-select-relax-melody">
+                  <h2 class="h2-condition">Отдых</h2>
+                  <div class="form_radio_group">
+                      <div class="form_radio_group-item">
+                          <input id="radio-1" type="radio" name="relax" value='{% static "pomodoro/melody/matrix.mp3" %}' onchange="updateSelectionRelax(this)">
+                          <label for="radio-1">Матрица</label>
+                      </div>
+          
+                      <div class="form_radio_group-item">
+                          <input id="radio-3" type="radio" name="relax" value='{% static "pomodoro/melody/korol.mp3" %}' onchange="updateSelectionRelax(this)">
+                          <label for="radio-3">Король</label>
+                      </div>
+                      <div class="form_radio_group-item">
+                          <input id="radio-4" type="radio" name="relax" value='{% static "pomodoro/melody/vremya.mp3" %}' onchange="updateSelectionRelax(this)">
+                          <label for="radio-4">Время</label>
+                      </div>
+                      <div class="form_radio_group-item">
+                          <input id="radio-5" type="radio" name="relax" value='{% static "pomodoro/melody/steklo.mp3" %}' onchange="updateSelectionRelax(this)">
+                          <label for="radio-5">Стекло</label>
+                      </div>
+                  </div>
+                  <a class="btn-radio-relax" onclick="playSelectSoundRelax('relax')"><img src="{% static 'pomodoro/img/zvuk.png' %}" alt=""></a>
+              </div>
+                <div>
+                  <button class="btn-save pos-btn-save-appearance" type="submit">Сохранить</button>
+                </div>
+            </form>
+            </div>
+          </div>
+      </div>
+    </body>
+  </html>

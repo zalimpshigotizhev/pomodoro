@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="description" content="A page for exploring basic HTML documents">
+  <link rel="stylesheet" type="text/css" href='{% static "pomodoro/css/navigation.css" %}'>
+  </head>
+  <body>
+    <h1>Настройки помидора</h1>
+    <form action="{% url 'config' %}" method="post">
+      {% csrf_token %}
+      <div class="time-config">
+        <label for="minute">Время помидора:</label><br>
+        <input class="input-minutes focus2" type="number" name="minutes" id="minute" value="{{conf_min}}"/>
+        <label for="minute-relax ">Время отдыха:</label><br>
+        <input class="input-minutes focus2" type="number" name="minutes_relax" id="minute-relax" value="{{conf_min}}"/>
+      </div>
+      <div class="time-config-2">
+          <label for="minute-relax-long">Время long отдыха:</label><br>
+          <input class="input-minutes focus2" type="number" name="minutes_relax_long" id="minute-relax-long" value=""/>
+      </div>
+      
+      <br>
+      <select class="form-control " name="themes" id="theme">
+        <option value="">Здесь можно выбрать тему</option>
+        {% for theme in themes %}
+          <option value='{{ theme.id }}'>{{ theme.name }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn-save pos-btn-save-settings" type="submit">Сохранить</button>
+    </form>
+  </body>
+</html>

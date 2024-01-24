@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="description" content="A page for exploring basic HTML documents">
+  <link rel="stylesheet" type="text/css" href='{% static "pomodoro/css/navigation.css" %}'>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  </head>
+  <body>
+    <h1 class="create-tasks">Создать задачу:</h1>
+    <form method="post" action="{% url 'create_tasks' %}" id="myForm">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <!-- <button type="submit">Создать</button> -->
+      <button class="btn-save pos-btn-save-create" type="submit">Создать</button>
+      
+    </form>
+    <div id="message-container"></div>
+    <script>
+      $(document).ready(function() {
+        $("#submitBtn").click(function() {
+          $.ajax({
+            url: "{% url 'create_tasks' %}",
+            type: "POST",
+            data: $("#myForm").serialize(),
+            success: function(response) {
+              $("#message-container").html('<div class="success-message">Данные успешно добавлены.</div>');
+            },
+            error: function(error) {
+              console.log(error);
+              $("#message-container").html('<div class="error-message">Произошла ошибка.</div>');
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

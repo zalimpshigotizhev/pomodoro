@@ -1,0 +1,165 @@
+{% load static %}
+{% load zai_filters %}
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" type="text/css" href='{% static "pomodoro/css/pomodoro_timer.css" %}'>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+  </head>
+
+  <body style="background: url('{% static vector %}'), {{color}};">
+
+    <div id="notification-container" class="hidden">
+      <div id="notification-content">
+        <div id="notification-title">Заголовок уведомления</div>
+        <div id="notification-body">Текст уведомления</div>
+      </div>
+    </div>
+
+    <div class="pomodoro_container">
+      <div class="divss">
+        {% if is_authenticated %}
+        <div class="profile">
+          <div class="profile-block text-align-start">
+            <a id="profileButton">
+              <img src="{% static 'users/img/user.png' %}" alt="" class="user-png">
+            </a>
+            <a id="pomodorButton">
+              <img src="{% static 'users/img/icon-pomo.png' %}" alt=""class="icon-pomo" >
+            </a>
+            <a href="">
+              <img src="{% static 'users/img/icon-zanki.png' %}" alt=""class="icon-pomo" >
+            </a>
+          </div>    
+          <div id="tabsContainer" class="tabs-container">
+            <div id="tab1" class="tab">Мой профиль</div>
+            <div id="tab2" class="tab"><a href="{% url 'logout' %}">Выйти</a></div>
+          </div>
+          <div id="tabsContainerPomodoro" class="tabs-container">
+            <div id="tab1" class="tab">О методе "Pomodoro"</div>
+            <div id="tab2" class="tab">О нас</div>
+          </div>
+        </div>
+        <!-- <div class="profile-block text-align-start">
+          <a href="">
+            <img src="{% static 'users/img/user.png' %}" alt="" class="user-png">
+          </a>
+          <a href="">
+            <img src="{% static 'users/img/icon-pomo.png' %}" alt=""class="icon-pomo" >
+            <img src="{% static 'users/img/icon-zanki.png' %}" alt=""class="icon-pomo" >
+          </a>
+        </div> -->
+        {% else %}
+        <div class="profile-block">
+          <div class="reg-or-join">
+            <a href="{% url 'register' %}">Регистрация</a> или <a href="{% url 'login' %}">Войти</a>
+          </div>
+        </div>
+        {% endif %}
+
+
+        <div class="stats_block" id="iframeContainer1">
+        
+        </div>
+      </div>
+
+        <div class="pomodoro_block" style="background-color: {{ color_navigation }}">
+          <div>
+            <div class="div-theme-active">
+                <span class="span-theme-active">Текущая тема:</span>
+                <a href="" class="theme-active">{{ conf_theme }}</a>
+            </div>
+        </div>
+
+        <div class='pomodoro_aa'>
+          <img src='{% static "pomodoro/img/pomodor.png" %}' id='imgCond'>
+        </div>
+        <div class="time" id="timer">
+        </div>
+        <div id="conditionRest" class="condition-quant"> </div>
+
+        <div class="button-cont">
+
+          {% csrf_token %}
+          <a id="startButton" class="button-start">Начать</a>
+          <a id="stopButton" class="button-stop">Стоп</a>
+
+          <div class="button-cont2">
+            <a id="completed" class="completed">Завершить сеанс</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-conteiner">
+        <div class="nav">
+          <a id="create" class="button-nav">Создать задачу</a>
+          <a id="config"class="button-nav">Настройки</a>
+          <a id="appearance"class="button-nav">Интерфейс</a>
+        </div>
+        <div class="navigation_block" id="iframeContainer2">
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="plotll" style="background-color: {{ color_navigation }}">
+    <div id="myPlot"></div>
+    </div>
+
+
+    <script>
+      let selectedValueRelax; // Переменная для Отдыха (Функция переопределяет значение при выборе песни)
+      let selectedValueWork; // Переменная для Работы (Функция переопределяет значение при выборе песни)
+      var serverUrl1 = '{% url "stats" %}';
+        console.log(serverUrl1)
+      var container1 = document.getElementById('iframeContainer1');
+
+
+      var serverUrl2 = '{% url "navigation" %}';
+      var container2 = document.getElementById('iframeContainer2');
+      var color_navigation = '{{ color_navigation }}'
+      const themes = JSON.parse('{{ themes_json|safe }}');
+      const dashboardUrl = "{% url 'dashboard' %}";
+      let durationInSeconds = {{ conf_min }};
+      let theme_id = {{ conf_theme.id }};
+      let relax_img = "{% static 'pomodoro/img/yoga.png' %}";
+      let work_img = "{% static 'pomodoro/img/pomodor.png'%}";
+      let relax_mp3 = '{{song_intensive}}';
+      let work_mp3 = '{{song_relax}}';
+      var tabsContainerProfile = document.getElementById('tabsContainer');
+      var tabsContainerPomodoro = document.getElementById('tabsContainerPomodoro');
+      const listOpenWindow = [];
+
+
+      document.getElementById('profileButton').addEventListener('click', function () {
+        openClosedTabs(tabsContainerProfile)
+      });
+
+      document.getElementById('pomodorButton').addEventListener('click', function () {
+        openClosedTabs(tabsContainerPomodoro)
+      });
+  
+      document.getElementById('create').addEventListener('click', function () {
+          loadContentInFrame('{% url "create_tasks" %}', container2);
+      });
+
+      document.getElementById('config').addEventListener('click', function () {
+          loadContentInFrame('{% url "config" %}', container2);
+      });
+
+      document.getElementById('appearance').addEventListener('click', function () {
+          loadContentInFrame('{% url "appearance" %}', container2);
+      });
+
+      document.getElementById('reloadButton').addEventListener('click', function () {
+          frame1.refresh(true);
+      });
+
+
+    </script>
+    <script src='{% static "pomodoro/js/timer.js" %}'></script>
+    <script src='{% static "pomodoro/js/func.js" %}'></script>
+
+  </body>
+</html>

@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: #D8BABA;
+        }
+        label {
+            color: #000;
+            font-family: Aneliza;
+            font-size: 25px;
+            font-style: normal;
+            font-weight: 200;
+            line-height: normal;
+            display: block;
+            margin-bottom: 9px;
+            text-align: justify;
+        }
+
+        input {
+            width: 350px;
+            height: 41px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .left-side{
+            text-align: center;
+            flex: 1.7;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden; /* Добавьте это свойство, чтобы избежать переполнения контейнера */
+        }
+        .right-side {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden; /* Добавьте это свойство, чтобы избежать переполнения контейнера */
+        }
+
+        .pomooo {
+            max-width: 85%; /* Это гарантирует, что изображение не будет превышать ширину своего контейнера */
+        }
+
+        .container {
+            border-radius: 79px;
+            background: #D9D9D9;
+            width: 80%; /* Используйте проценты вместо фиксированной ширины */
+            max-width: 1538px; /* Максимальная ширина контейнера */
+            height: 730px;
+            display: flex; /* Добавьте display: flex; чтобы дочерние элементы использовали flex */
+            padding-right: 135px;
+            padding-left: 135px;
+            padding-top: 25px;
+            padding-bottom: 25px;
+        }
+
+        .form-group {
+            font-family: Aneliza;
+            margin-bottom: 20px;
+            margin-left: 25px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-auth h1 {
+            margin: 0;
+            margin-top: 80px;
+            margin-bottom: 30px;
+            color: #000;
+            font-family: Aneliza;
+            font-size: 65px;
+            font-style: normal;
+            font-weight: 900;
+            line-height: normal;
+        }
+
+        .quote h2{
+            margin: 0;
+            color: #000;
+            font-family: Aneliza;
+            font-size: 50px;
+            font-style: normal;
+            font-weight: 200;
+            line-height: normal;
+        }
+        .quote h3{
+            margin: 0;
+            color: #744D4D;
+            font-family: Aneliza;
+            font-size: 30px;
+            font-style: normal;
+            font-weight: 100;
+            line-height: normal;
+        }
+
+        .but-join-reg{
+            text-align: center;
+            margin-top: 30px;
+
+        }
+
+        .alternative {
+            text-decoration: none;
+            color: unset;
+            font-family: Aneliza;
+        }
+        .alternative:hover {
+            border-bottom: solid 0.1px;
+            border-color: blue;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-side">
+            <img src="{% static 'pomodoro/img/pomooo.png' %}" class="pomooo">
+            <div class="quote">
+                <h2>“Усердие все превозмогает!”</h2>
+                <h3>Козьма Прутков</h3>
+            </div>
+        </div>
+        <div class="right-side">
+            <div class="form-auth">
+                <form action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+                    <h1> Войти
+                        в аккаунт</h1>
+                    <div class="form-reg">
+                        {{ form.errors }}
+                        {{ form.username.errors }}
+                        {{ form.password.errors }}
+                        {{ form.as_p }}
+                    </div>
+                    <div class="but-join-reg">
+                        <a href="{% url 'register' %}" class="alternative">Зерегистрироваться сейчас</a>
+                        <button type="submit" class="form-group">Войти</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
